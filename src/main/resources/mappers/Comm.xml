@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java501.S20230401.model.CommMapper">
+
+	<!-- 유현규 -->
+	<select id="hgCommGetValue" parameterType="int" resultType="java.lang.String">
+		SELECT COMM_VALUE FROM COMM WHERE COMM_ID = #{comm_id}
+	</select>
+	<select id="hgGetCommById" parameterType="int" resultType="Comm">
+		SELECT * FROM COMM WHERE COMM_ID = #{comm_id}
+	</select>
+	<select id="hgGetCommByName" parameterType="java.lang.String" resultType="Comm">
+		SELECT * FROM COMM WHERE COMM_VALUE = #{comm_value}
+	</select>
+	<select id="hgGetBoardName" resultType="Comm">
+		SELECT * FROM COMM WHERE COMM_ID BETWEEN 1000 AND 1600 AND MOD(COMM_ID, 100) = 0
+	</select>
+	<select id="hgGetCategoryListBySuper" parameterType="int" resultType="Comm">
+		SELECT * FROM COMM WHERE TRUNC(COMM_ID / 100) * 100 = #{superId} AND COMM_ID != #{superId}
+	</select>
+	<select id="hgGetCategoryNames" resultType="Comm">
+		<![CDATA[
+			SELECT * FROM COMM WHERE COMM_ID >= 1000
+		]]>
+	</select>
+	
+	
+	
+	<!-- 양동균 -->
+	<resultMap type="Comm" id="dgCommMap">
+		<id 	column="comm_id" 	property="comm_id"/><!-- PK -->
+		<result column="comm_value" property="comm_value"/>
+	</resultMap>
+	
+	<select id="dgCategoryName" parameterType="int" resultType="java.lang.String">
+		SELECT  COMM_VALUE
+		FROM    COMM
+		WHERE   COMM_ID = #{comm_id}
+	</select>
+	
+	<select id="dgCommList" parameterType="int" resultType="Comm">
+		SELECT  *
+		FROM    COMM
+		WHERE   COMM_ID BETWEEN #{comm_id} AND #{comm_id}+99
+	</select>
+	
+	
+	
+	
+	<!-- 임동빈 -->
+	<select id="SelectBoard" resultType="Comm">
+		select * from comm where comm_id between 1000 and 1060
+	</select>
+	
+	<select id="SelectGender" resultType="Comm">
+		select * from comm where comm_id between 201 and 202
+	</select>
+	
+	
+	
+	
+	
+	<!-- 김진현 -->
+	<select id="JHCategory" resultType="Comm"> 
+		SELECT * FROM comm WHERE comm_id between 1110 and 1150
+	</select>
+	
+	<select id="JHCategoryUd" resultType="Comm">
+		SELECT * FROM comm WHERE comm_id between 1110 and 1150
+	</select>
+	
+	<select id="JHPayStatus" resultType="Comm">
+		SELECT * FROM comm WHERE comm_id IN (401, 404)
+	</select>
+
+	<select id="JHBoardName" parameterType="int" resultType="java.lang.String">
+		SELECT comm_value
+		FROM comm
+		WHERE comm_id = #{comm_id}
+	</select>
+	
+	<select id="JHcommList" resultType="Comm">
+		SELECT * FROM comm WHERE comm_id BETWEEN 1100 and 1160
+	</select>
+	
+	
+	<!-- 최승환 -->
+<!-- 	<select id="shCategoryName" parameterType="int" resultType="java.lang.String">
+		SELECT  comm_value
+		FROM    comm
+		WHERE   comm_id = #{comm_id}
+	</select>
+	
+	<select id="shCommList" parameterType="int" resultType="Comm">
+		SELECT  *
+		FROM    comm
+		WHERE   comm_id BETWEEN #{comm_id} AND #{comm_id}+99
+	</select> -->
+	
+	
+	
+</mapper>

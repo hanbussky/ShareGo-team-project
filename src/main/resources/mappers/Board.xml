@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java501.S20230401.model.BoardMapper">
+
+	<!-- 양동균 -->
+	<resultMap type="Board" id="dgBoardMap">
+		<id 	column="brd_id" 		property="brd_id"/>
+		<result column="read_auth" 		property="read_auth"/>
+		<result column="write_auth" 	property="write_auth"/>
+		<result column="reply_auth" 	property="reply_auth"/>
+		<collection property="comm" 	resultMap="com.java501.S20230401.model.CommMapper.dgCommMap"/>
+	</resultMap>
+	
+</mapper>

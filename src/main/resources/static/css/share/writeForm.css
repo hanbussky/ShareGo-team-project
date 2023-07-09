@@ -1,0 +1,303 @@
+@charset "UTF-8";
+
+/* body {
+	font-family: Arial, sans-serif;
+	background-color: #f5f5f5;
+	margin: 10%;
+}
+.container {
+	width: 80%;
+	height: 90%; max-width : 800px;
+	margin: 0 auto;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	box-sizing: border-box;
+	max-width: 800px;
+} */
+.container {
+	padding: 10px;
+}
+
+/* 입력 폼 간격 */
+.form-group {
+	/* margin-bottom: 20px; */
+	margin: 10px 0;
+}
+/* label 속성 */
+.form-group label {
+	font-size: 18px;
+	font-weight: bold;
+	display: block;
+	/* margin-bottom: 5px; */
+}
+#trade-change {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.form-group input[type="datetime-local"]{
+	width: 200px;
+	min-width: 0;
+	max-width: none;
+	outline: none;
+	box-shadow: none;
+	border: 2.5px solid rgba(128, 128, 128, 0.5);
+	border-radius: 5px;
+}
+input:focus, textarea:focus {
+	outline: 0;
+	box-shadow: 0 0 0 2px rgba(0, 123, 255, .25);
+}
+/* 내용 크기 */
+.form-group textarea {
+	height: 200px;
+	resize: none;
+}
+
+/* 버튼 */
+.button-group {
+	text-align: center;
+	margin-top: 20px;
+}
+
+/* 작성 버튼 호버 효과 */
+.btns-submit:hover {
+	background-color: #84bfff;
+}
+/* 작성 버튼 스타일 */
+.btns-submit {
+	padding: 10px 15px;
+	margin: 10px;
+    color: white;
+    text-align: center;
+    background-color: #007bff;
+    border: none;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+/* 취소 버튼 스타일 */
+.btns-cancel {
+	padding: 10px 15px;
+	margin: 10px;
+    color: white;
+    text-align: center;
+	background-color: #f44336;
+    border: none;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+/* 취소 버튼 호버 효과 */
+.btns-cancel:hover {
+	background-color: #f3695f;
+}
+
+/* for Tag */
+div#tag-box {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-grow: 0;
+	border-bottom: 2.5px solid var(--subtheme);
+	border: 0;
+}
+
+div#tag-box > div.tag-box-tag {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--subtheme);
+	color: var(--subtheme-font);
+	font-size: 12px;
+	font-weight: bold;
+	padding: 2.5px 5px;
+	border-radius: 5px;
+	border: none;
+	margin-right: 5px;
+}
+div.tag-box-tag > span.tag-box-tag-value {
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	margin-right: 2.5px;
+}
+div.tag-box-tag > button.tag-box-tag-remove {
+	border-radius: 50%;
+	border: none;
+	outline: none;
+	width: 14px;
+	height: 14px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	background-color: var(--subtheme);
+	cursor: pointer;
+}
+button.tag-box-tag-remove * {
+	pointer-events: none;
+}
+button.tag-box-tag-remove > svg {
+	stroke: var(--subtheme-font);
+}
+input[type="text"] {
+	min-width: 0;
+	max-width: none;
+	border: 0;
+	outline: none;
+	box-shadow: none;
+	border-bottom: 2.5px solid rgba(128, 128, 128, 0.5);
+	border-radius: 0;
+	padding: 5px 10px;
+}
+input[type="number"] {
+	min-width: 0;
+	max-width: none;
+	outline: none;
+	box-shadow: none;
+	border: 2.5px solid rgba(128, 128, 128, 0.5);
+	border-radius: 5px;
+}
+input.art_tag {
+	min-width: 0;
+	max-width: none;
+	border: 0;
+	outline: none;
+	box-shadow: none;
+}
+select {
+	min-width: 0;
+	max-width: none;
+	border: 0;
+	outline: none;
+	box-shadow: none;
+	border-bottom: 2.5px solid rgba(128, 128, 128, 0.5);
+	border-radius: 0;
+}
+
+/* for Editor */
+#articleEditor {
+	height: 600px;
+	border-radius: 0 0 5px 5px;
+	margin-bottom: 10px;
+}
+div.ql-toolbar {
+	border-radius: 5px 5px 0 0;
+	margin-top: 10px;
+}
+
+/* for Region Popup */
+form div.popup-group {
+	position: relative;
+	margin: 5px 0;
+	height: 32px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	z-index: 90;
+}
+form div.popup-group > button.togglePopup {
+	width: 120px;
+	height: 32px;
+	overflow: hidden;
+	margin: 0;
+	margin-left: 10px;
+}
+form div.popup-group > button.togglePopup > * {
+	pointer-events: none;
+}
+form div.popup-group > div.popup-window {
+	position: absolute;
+	border-radius: 2.5px;
+	background-color: var(--theme);
+	border: 2px solid #CCCCCC;
+	top: auto;
+	bottom: 32px;
+	left: 44px;
+}
+button#region {
+	font-size: 14px;
+	font-weight: bold;
+	height: 32px;
+}
+div#region-popup {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	border: 2px solid rgba(128, 128, 128, 0.5);
+	font-size: 14px;
+	font-weight: bold;
+	height: 400px;
+}
+div.popup-window > div > button {
+	width: 116px;
+	border: none;
+	outline: none;
+	font-size: 14px;
+	font-weight: bold;
+}
+div.popup-window > div > button {
+	background-color: var(--theme);
+}
+button.subitem-header ~ div.subitem-list {
+	display: none;
+	position: absolute;
+	bottom: 0px;
+	left: 116px;
+	background-color: var(--theme);
+	border: 2px solid rgba(128, 128, 128, 0.5);
+	max-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+button.subitem-header:hover ~ div.subitem-list,
+button.subitem-header ~ div.subitem-list:hover {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+div.subitem-list > button {
+	width: 116px;
+	border: none;
+	outline: none;
+	font-size: 14px;
+	font-weight: bold;
+}
+div.subitem-list > button {
+	background-color: var(--theme);
+}
+
+/* for Initial Editor concept */
+.ql-picker-options {
+	max-height: 200px;
+	overflow-y: auto;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="8px"]::before { content: '8px'; font-size: 8px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="9px"]::before { content: '9px'; font-size: 9px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: '10px'; font-size: 10px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="11px"]::before { content: '11px'; font-size: 11px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: '12px'; font-size: 12px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="13px"]::before { content: '13px'; font-size: 13px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before { content: '14px'; font-size: 14px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="15px"]::before { content: '15px'; font-size: 15px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: '16px'; font-size: 16px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="17px"]::before { content: '17px'; font-size: 17px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { content: '18px'; font-size: 18px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="19px"]::before { content: '19px'; font-size: 19px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before { content: '20px'; font-size: 20px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="21px"]::before { content: '21px'; font-size: 21px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="22px"]::before { content: '22px'; font-size: 22px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="23px"]::before { content: '23px'; font-size: 23px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { content: '24px'; font-size: 24px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="25px"]::before { content: '25px'; font-size: 25px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="26px"]::before { content: '26px'; font-size: 26px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="27px"]::before { content: '27px'; font-size: 27px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="28px"]::before { content: '28px'; font-size: 28px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="29px"]::before { content: '29px'; font-size: 29px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="30px"]::before { content: '30px'; font-size: 30px !important; }

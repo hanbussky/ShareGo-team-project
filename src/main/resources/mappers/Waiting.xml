@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java501.S20230401.model.WaitingMapper">
+
+	<!-- 양동균 -->
+	<resultMap type="Waiting" id="dgWaitingMap">
+		<id 		column="trd_id" 	property="trd_id"/><!-- PK -->
+		<id 		column="mem_id" 	property="mem_id"/><!-- PK -->
+		<result 	column="wait_date" 	property="wait_date"/>
+		<collection property="member" 	resultMap="com.java501.S20230401.model.MemberMapper.dgMemberMap"/>
+	</resultMap>
+	
+	<!-- 거래 대기 목록 추가 -->
+	<insert id="dgShareWaitingAdd" parameterType="Article">
+		INSERT  INTO
+		WAITING(TRD_ID, MEM_ID, WAIT_DATE)
+		VALUES ((	SELECT	TRD_ID
+					FROM 	ARTICLE
+					WHERE	ART_ID = #{art_id} 
+					AND		BRD_ID = #{brd_id}), #{mem_id}, SYSDATE)
+	</insert>
+	<!-- 대기열 추가 -->
+	<select id="dgShareWaitingList" parameterType="int" resultMap="dgWaitingMap">
+		SELECT	*
+		FROM 	WAITING LEFT OUTER JOIN (   SELECT MEM_ID, MEM_USERNAME, MEM_NICKNAME, MEM_REGION1, MEM_REGION2, MEM_REGDATE, MEM_IMAGE, MEM_GENDER, MEM_LATEST, REPORT_ID AS memReport_id
+		                                    FROM MEMBER)USING(MEM_ID)
+		WHERE	TRD_ID = #{trd_id}
+	</select>
+	<!-- 신청 여부 -->
+	<select id="dgUserWaiting" parameterType="Article" resultType="Integer">
+		SELECT	COUNT(*)
+		FROM	WAITING
+		WHERE	MEM_ID = #{mem_id}
+		AND		TRD_ID = (	SELECT	TRD_ID
+							FROM 	ARTICLE
+							WHERE	ART_ID = #{art_id} 
+							AND		BRD_ID = #{brd_id})
+	</select>
+	<delete id="dgShareWaitingDel" parameterType="Article">
+		DELETE
+		FROM	WAITING
+		WHERE	MEM_ID = #{mem_id}
+		AND 	TRD_ID = (	SELECT	TRD_ID
+							FROM 	ARTICLE
+							WHERE	ART_ID = #{art_id} 
+							AND		BRD_ID = #{brd_id})
+	</delete>
+</mapper>

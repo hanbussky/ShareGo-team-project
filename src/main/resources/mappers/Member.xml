@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java501.S20230401.model.MemberMapper">
+
+	<!-- 유현규 -->
+	<select id="hgGetMemberByUsername" parameterType="java.lang.String" resultType="Member">
+		SELECT * FROM MEMBER WHERE MEM_USERNAME = #{username}
+	</select>
+	<select id="hgGetMemberByEmail" parameterType="java.lang.String" resultType="Member">
+		SELECT * FROM MEMBER WHERE MEM_EMAIL = #{email}
+	</select>
+	<select id="hgGetMemberByNickname" parameterType="java.lang.String" resultType="Member">
+		SELECT * FROM MEMBER WHERE MEM_NICKNAME = #{nickname}
+	</select>
+	<select id="hgGetMemberByUsernameWithExcept" parameterType="hashmap" resultType="Member">
+		SELECT * FROM MEMBER WHERE MEM_USERNAME = #{value} AND MEM_ID != #{except}
+	</select>
+	<select id="hgGetMemberByEmailWithExcept" parameterType="hashmap" resultType="Member">
+		SELECT * FROM MEMBER WHERE MEM_EMAIL = #{value} AND MEM_ID != #{except}
+	</select>
+	<select id="hgGetMemberByNicknameWithExcept" parameterType="hashmap" resultType="Member">
+		SELECT * FROM MEMBER WHERE MEM_NICKNAME = #{value} AND MEM_ID != #{except}
+	</select>
+	
+	
+	<insert id="hgRegistMember" parameterType="Member">
+		INSERT INTO MEMBER(MEM_ID, MEM_USERNAME, MEM_PASSWORD, MEM_NICKNAME,
+						   MEM_EMAIL, MEM_TEL, MEM_REGION1, MEM_REGION2,
+						   MEM_AUTHORITY, MEM_REGDATE, MEM_IMAGE, MEM_GENDER,
+						   MEM_NAME, MEM_BIRTHDAY, MEM_LATEST, ISDELETE)
+					VALUES ((SELECT MAX(MEM_ID) + 1 FROM MEMBER), #{mem_username, jdbcType=VARCHAR}, #{mem_password, jdbcType=VARCHAR}, #{mem_nickname, jdbcType=VARCHAR},
+							#{mem_email, jdbcType=VARCHAR}, #{mem_tel, jdbcType=VARCHAR}, #{mem_region1, jdbcType=NUMERIC}, #{mem_region2, jdbcType=NUMERIC},
+							101, SYSDATE, #{mem_image, jdbcType=VARCHAR}, #{mem_gender, jdbcType=NUMERIC}, #{mem_name, jdbcType=VARCHAR},
+							#{mem_birthday, jdbcType=TIMESTAMP}, SYSDATE, 0)
+	</insert>
+	<select id="hgGetMemberById" parameterType="int" resultType="Member">
+		SELECT * FROM MEMBER WHERE MEM_ID = #{mem_id}
+	</select>
+	<update id="hgSetAuthority" parameterType="Member">
+		UPDATE MEMBER SET MEM_AUTHORITY = #{mem_authority, jdbcType=NUMERIC} WHERE MEM_ID = #{mem_id, jdbcType=NUMERIC}
+	</update>
+	<select id="hgGetCountAllMembers" resultType="int">
+		SELECT COUNT(*) FROM MEMBER
+	</select>
+	<select id="hgGetMembersForAdmin" parameterType="Member" resultType="Member">
+		SELECT *
+		FROM (SELECT TEMP.*, ROWNUM RN
+				 FROM (SELECT MEM.MEM_ID, MEM.MEM_USERNAME, MEM.MEM_NICKNAME, MEM.MEM_EMAIL, MEM.MEM_TEL, MEM.MEM_REGION1,
+									MEM.MEM_REGION2, MEM.MEM_AUTHORITY, MEM.MEM_REGDATE, MEM.MEM_IMAGE, MEM.MEM_GENDER,
+								    MEM.MEM_NAME, MEM.MEM_BIRTHDAY, MEM.MEM_LATEST, MEM.ISDELETE, MEM.REPORT_ID,
+							        NVL(MR.MEMBER_REPORT_CNT, 0) MEMBER_REPORT_CNT,
+							        NVL(AR.ARTICLE_REPORT_CNT, 0) ARTICLE_REPORT_CNT,
+							        NVL(RR.REPLY_REPORT_CNT, 0) REPLY_REPORT_CNT
+						  FROM MEMBER MEM,
+							       (SELECT M.MEM_ID, RJ1.MEMBER_REPORT_CNT
+			 				      	FROM MEMBER M LEFT OUTER JOIN (SELECT TM1.REPORT_ID, COUNT(*) MEMBER_REPORT_CNT
+												                                   FROM MEMBER TM1 LEFT OUTER JOIN REPORT TR1 ON(TM1.REPORT_ID = TR1.REPORT_ID)
+												                                   WHERE TM1.REPORT_ID IS NOT NULL
+												                                   GROUP BY TM1.REPORT_ID) RJ1 ON (M.REPORT_ID = RJ1.REPORT_ID)) MR,
+							       (SELECT M.MEM_ID, RJ2.ARTICLE_REPORT_CNT
+							      	FROM MEMBER M LEFT OUTER JOIN (SELECT TA2.MEM_ID, COUNT(*) ARTICLE_REPORT_CNT
+												                                   FROM ARTICLE TA2 LEFT OUTER JOIN REPORT TR2 ON (TA2.REPORT_ID = TR2.REPORT_ID)
+			 									                                   WHERE TA2.REPORT_ID IS NOT NULL
+												                                   GROUP BY TA2.MEM_ID) RJ2 ON (M.MEM_ID = RJ2.MEM_ID)) AR,
+							       (SELECT M.MEM_ID, RJ3.REPLY_REPORT_CNT
+							      	FROM MEMBER M LEFT OUTER JOIN (SELECT TREP3.MEM_ID, COUNT(*) REPLY_REPORT_CNT
+												                                   FROM REPLY TREP3 LEFT OUTER JOIN REPORT TR3 ON (TREP3.REPORT_ID = TR3.REPORT_ID)
+												                                   WHERE TREP3.REPORT_ID IS NOT NULL
+												                                   GROUP BY TREP3.MEM_ID) RJ3 ON (M.MEM_ID = RJ3.MEM_ID)) RR
+						  WHERE MEM.MEM_ID = MR.MEM_ID AND MEM.MEM_ID = AR.MEM_ID AND MEM.MEM_ID = RR.MEM_ID
+						  ORDER BY MEM.MEM_ID DESC) TEMP)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	<!-- <select id="hgGetMemberById" parameterType="int" resultType="Member">
+		SELECT MEM_ID, MEM_USERNAME, MEM_NICKNAME, MEM_EMAIL, MEM_TEL, MEM_REGION1,
+		          MEM_REGION2, MEM_AUTHORITY, MEM_REGDATE, MEM_IMAGE, MEM_GENDER,
+			      MEM_NAME, MEM_BIRTHDAY, MEM_LATEST, ISDELETE, REPORT_ID
+		FROM MEMBER
+		WHERE MEM_ID = #{mem_id}
+	</select> -->
+	<update id="hgUpdateAuthorityByMember" parameterType="Member">
+		UPDATE MEMBER SET MEM_AUTHORITY = #{mem_authority} WHERE MEM_ID = #{mem_id}
+	</update>
+	<update id="hgUpdateIsdeleteByMember" parameterType="Member">
+		UPDATE MEMBER SET ISDELETE = #{isdelete} WHERE MEM_ID = #{mem_id}
+	</update>
+	<update id="hgUpdateMember" parameterType="Member">
+		UPDATE MEMBER SET MEM_NICKNAME = #{mem_nickname},
+									MEM_TEL = #{mem_tel},
+									MEM_BIRTHDAY = #{mem_birthday},
+									MEM_GENDER = #{mem_gender},
+									<if test="mem_image != null">
+										MEM_IMAGE = #{mem_image},
+									</if>
+									MEM_REGION1 = #{mem_region1, jdbcType=NUMERIC},
+									MEM_REGION2 = #{mem_region2, jdbcType=NUMERIC}
+		WHERE MEM_ID = #{mem_id}
+	</update>
+	<update id="hgDeleteAccount" parameterType="int">
+		UPDATE MEMBER SET ISDELETE = 1 WHERE MEM_ID = #{mem_id}
+	</update>
+	<update id="hgUpdatePassword" parameterType="Member">
+		UPDATE MEMBER SET MEM_PASSWORD = #{mem_password} WHERE MEM_ID = #{mem_id}
+	</update>
+	<select id="hgGetMemberByNameAndEmail" parameterType="Member" resultType="Member">
+		SELECT MEM_ID, MEM_USERNAME, MEM_NAME, MEM_EMAIL FROM MEMBER WHERE MEM_NAME = #{mem_name} AND MEM_EMAIL = #{mem_email}
+	</select>
+
+
+
+	<!-- 양동균 -->
+	<resultMap type="Member" id="dgMemberMap">
+		<id 	column="mem_id" 		property="mem_id"/>	<!-- PK -->
+		<result column="mem_username"	property="mem_username"/>
+		<result column="mem_password"	property="mem_password"/>
+		<result column="mem_nickname"	property="mem_nickname"/>
+		<result column="mem_email"		property="mem_email"/>
+		<result column="mem_tel"		property="mem_tel"/>
+		<result column="mem_region1"	property="mem_region1"/>
+		<result column="mem_region2"	property="mem_region2"/>
+		<result column="mem_authority"	property="mem_authority"/>
+		<result column="mem_regdate"	property="mem_regdate"/>
+		<result column="mem_image"		property="mem_image"/>
+		<result column="mem_gender"		property="mem_gender"/>
+		<result column="mem_name"		property="mem_name"/>
+		<result column="mem_birthday"	property="mem_birthday"/>
+		<result column="mem_latest"		property="mem_latest"/>
+		<result column="isdelete"		property="isdelete"/>
+		<result column="report_id"		property="report_id"/>
+		<collection property="comm" 	resultMap="com.java501.S20230401.model.CommMapper.dgCommMap"/>
+	</resultMap>
+	
+	<update id="dgReportMember" parameterType="Member">
+		UPDATE	MEMBER
+		SET		REPORT_ID = #{report_id}
+		WHERE	MEM_ID = #{mem_id}
+	</update>
+	<select id="dgCheckUser" parameterType="java.lang.String" resultType="int">
+		SELECT	MEM_ID
+		FROM	MEMBER
+		WHERE 	MEM_USERNAME = #{mem_username}
+	</select>
+	
+	<!-- 게시글의 유저 전체 조회 -->
+<!-- 	<select id="ist" resultType="Article" parameterType="Member">
+		Select  *
+		From    (Select rownum as rn, a.*
+		         From   (Select 	* 
+		                 From   	article
+		                 Where  	brd_id
+		                 Between 	#{brd_id} and #{brd_id}+99
+		                 Order by 	art_regdate desc) a)
+		Where    rn between #{start} and #{end}
+	</select> -->
+
+	<!-- 게시판 카운트 -->
+<!-- 	<select id="nt" resultType="int" parameterType="int">
+		Select 	count(*)
+		From 	article
+		Where 	brd_id = #{brd_id}
+	</select> -->
+	
+	<!-- 게시판 조회 -->
+<!-- 	<select id="st" resultType="Article" parameterType="int">
+		Select 	*
+		From   (Select rownum as rn, a.*
+		        From   (Select     *
+		                From       article
+		                Where      brd_id = #{brd_id}s
+		                Order by   art_regdate desc) a)
+		Where   rn between #{start} and #{end}
+	</select> -->
+	
+	
+	
+	<!-- 최승환 -->
+   <select id="memCount" parameterType="java.lang.String" resultType="int">
+ 		Select Count(*) from member  where id = #{mem_id}	
+   </select>
+</mapper>

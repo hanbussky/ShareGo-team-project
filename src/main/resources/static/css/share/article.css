@@ -1,0 +1,317 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+.view-content div{
+    padding: 5px;
+}
+
+div.user-profile-image-in-list {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	margin-right: 10px;
+	overflow: hidden;
+	padding: 0;
+	box-shadow: 0 0 2.5px var(--theme-font);
+}
+div.user-profile-image-in-list > img {
+	width: inherit;
+	height: inherit;
+	object-fit: cover;
+}
+
+.only-for-member > button {
+	cursor: pointer;
+	font-size: 14px;
+	padding: 2.5px 5px;
+}
+.article-title{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.article-title .modal-report{
+	margin-left: auto;
+	padding: 0;
+}
+.article_content img {
+	max-width: 100%;
+}
+/* .view-content{
+    padding: 10% 20%;
+    margin: auto;
+    font-size: 16px;
+} */
+button{
+    width: auto;
+    height: 25px;
+    margin: 0 5px;
+    color: white;
+    background-color: #0193F8;
+    border: none;
+    border-radius: 14px;
+}
+/* 거래 영역  */
+.article-trade{
+    width: auto;
+    height: auto;
+    border: 1px solid #0193F8;
+    border-radius: 10px;
+    margin: 30px 0px;
+    padding: 20px 20px;
+}
+textarea{
+	display: inline-block;
+	/* width: 100%;
+    height: 200px; */
+	resize: none;
+	font-size: 16px;
+	color: #495057;
+	background-color: #fff;
+    border: 1px solid rgba(0, 123, 255, .2);
+    border-radius: 10px;
+	transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	box-sizing: border-box;
+    /* margin: 30px 0px; */
+    /* padding: 20px 20px; */
+    padding: 10px;
+}
+textarea.reply-primitive-write {
+	resize: none;
+	outline: none;
+	border: 0;
+	box-shadow: none;
+}
+input.reply-primitive-submit {
+	border: 0;
+	outline: none;
+	background-color: transparent;
+	color: var(--subtheme);
+	font-size: 16px;
+	font-weight: bolder;
+	cursor: pointer;
+}
+textarea:focus {
+	outline: 0;
+	box-shadow: 0 0 0 2px rgba(0, 123, 255, .3);
+}
+textarea:disabled {
+	outline: 0;
+	border: 0;
+}
+/* 참가자 명단 */
+.userList-memberInfo {
+	display: flex;
+	align-items: center;
+}
+.userList-btns {
+	margin-left: auto;
+	
+}
+.share-btns {
+	display: flex;
+	justify-content: center;
+}
+.share-btns button{
+	margin: 10px;
+}
+#btns-end{
+	background-color: gray;
+}
+
+
+/* 글의 유저 정보 첫번째 요소를 제외한 span태그전에 적용 */
+.article-memberInfo span:not(:first-child)::before{
+    content: ' | ';
+}
+.reply-detail{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+.reply-view{
+    border: 1px solid var(--subtheme);
+    border-radius: 5px;
+}
+.reply-member{
+    border-bottom: 1px solid #0193F8;
+    
+}
+.reply-login > span{
+    display: block;
+    text-align: center;
+}
+div.rep-content{
+    border: none;
+    resize: none;
+    /* width: 90%;
+    height: 90%; */
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+textarea.rep-content {
+	height: max-content;
+	min-height: 100px;
+	max-height: 150px;
+	background-color: transparent;
+}
+
+/* 펼치기 버튼 */
+.reply-list button{
+    background-color: transparent;
+    color: #0193F8;
+    font-size: 16px;
+}
+/* 추천 비추천 버튼 */
+#btns-vote button{
+    width: 100px;
+    height: 80px;
+    font-size: 20px;
+    background-color: #eeeeee;
+    color: black;
+    margin: 15px;
+    cursor: pointer;
+}
+
+/* 1번째 부터 2번째 까지 */
+#btns-vote button:nth-child(-n+2):hover {
+    background-color: var(--subtheme);
+    color: white;
+}
+
+/* 3번째 부터 4번째 전까지 */
+#btns-vote button:nth-child(n+3):hover {
+    background-color: var(--warning);
+    color: white;
+}
+
+
+.btns-tag{
+	margin: 0px 2px;
+	background-color: transparent;
+	color: var(--subtheme);
+	font-weight: bolder;
+	font-size: 14px;
+}
+.btns-tag::before{
+    content: '#';
+}
+
+/* 기능 버튼 */
+.btns-action{
+    width: 70px;
+    height: 30px;
+    font-size: 13px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+/* .btns-action:hover{
+    background-color: rgba(1, 147, 248, 0.8);
+} */
+
+
+
+
+
+
+
+
+
+
+/* modal 부분 */
+.myModal{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.myModal-window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 70%;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    animation: modal-animation 0.5s ease-in-out;
+    padding: 30px;
+}
+@keyframes modal-animation {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header{
+    display: flex;
+    font-size: 30px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.modal-close{
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+
+.btns-action:hover {
+    background-color: #0056b3;
+}
+
+/* Media Query for Small Screens */
+@media (max-width: 600px) {
+    .myModal-window {
+    margin: 20px;
+    max-width: none;
+    }
+}
+
+.modal-body {
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+
+
+.modal-checkbox{
+    display: flex;
+	align-items: center;
+}
+
+.myCheckbox {
+	width: 20px;
+	height: 20px;
+	border-radius: 4px;
+	cursor: pointer;
+    margin-right: 10px;
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java501.S20230401.AuthenticationsMapper">
+	<!-- 유현규 -->
+	<insert id="hgInsertAuthentication" parameterType="java.util.HashMap">
+		INSERT INTO AUTHENTICATIONS (AUTH_ID, MEM_ID, AUTH_VALUE)
+		VALUES (AUTH_ID_SEQ.NEXTVAL, #{id, jdbcType=NUMERIC}, #{code, jdbcType=VARCHAR})
+	</insert>
+	<select id="hgGetAuthenticationByCode" parameterType="java.lang.String" resultType="Authentications">
+		SELECT * FROM AUTHENTICATIONS WHERE AUTH_VALUE = #{code}
+	</select>
+	<delete id="hgDeleteAuthentication" parameterType="int">
+		DELETE FROM AUTHENTICATIONS WHERE AUTH_ID = #{auth_id}
+	</delete>
+</mapper>

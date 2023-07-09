@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java501.S20230401.MemberInfoMapper">
+	<!-- 유현규 -->
+	<select id="hgGetMemberInfoByUsername" parameterType="java.lang.String" resultType="MemberInfo">
+		SELECT	MEM_ID, MEM_USERNAME, MEM_PASSWORD, MEM_NICKNAME, MEM_EMAIL,
+		       		MEM_TEL, MEM_REGION1, MEM_REGION2, MEM_AUTHORITY, MEM_REGDATE,
+		       		MEM_IMAGE, MEM_GENDER, MEM_NAME, MEM_BIRTHDAY, MEM_LATEST, ISDELETE, REPORT_ID,
+		       		NVL(ART_COUNT, 0) AS ART_COUNT, NVL(REP_COUNT, 0) AS REP_COUNT,
+		       		NVL(HIS_GOOD, 0) AS HIS_GOOD, NVL(HIS_NORMAL, 0) AS HIS_NORMAL, NVL(HIS_BAD, 0) AS HIS_BAD
+		FROM (SELECT *
+		         FROM MEMBER M LEFT OUTER JOIN (SELECT MEM_ID, COUNT(*) ART_COUNT FROM ARTICLE GROUP BY MEM_ID) A USING(MEM_ID)
+		                    			 LEFT OUTER JOIN (SELECT MEM_ID, COUNT(*) REP_COUNT FROM REPLY GROUP BY MEM_ID) R USING(MEM_ID)
+		                    			 LEFT OUTER JOIN (SELECT MEM_ID, SUM(HIS_GOOD) HIS_GOOD, SUM(HIS_NORMAL) HIS_NORMAL, SUM(HIS_BAD) HIS_BAD
+		                                     					FROM TRADE T NATURAL JOIN (SELECT TRD_ID, COUNT(CASE WHEN HIS_SCORE = 1 THEN 1 END) HIS_GOOD,
+		                                                                       							 		  COUNT(CASE WHEN HIS_SCORE = 0 THEN 1 END) HIS_NORMAL,
+		                                                                      							 		  COUNT(CASE WHEN HIS_SCORE = -1 THEN 1 END) HIS_BAD
+		                                                                								 FROM HISTORY GROUP BY TRD_ID)
+		                                     					GROUP BY MEM_ID) H USING(MEM_ID))
+		WHERE MEM_USERNAME = #{username}
+	</select>
+	<select id="hgGetMemberInfoById" parameterType="int" resultType="MemberInfo">
+		SELECT	MEM_ID, MEM_USERNAME, MEM_PASSWORD, MEM_NICKNAME, MEM_EMAIL,
+		       		MEM_TEL, MEM_REGION1, MEM_REGION2, MEM_AUTHORITY, MEM_REGDATE,
+		       		MEM_IMAGE, MEM_GENDER, MEM_NAME, MEM_BIRTHDAY, MEM_LATEST, ISDELETE, REPORT_ID,
+		       		NVL(ART_COUNT, 0) AS ART_COUNT, NVL(REP_COUNT, 0) AS REP_COUNT,
+		       		NVL(HIS_GOOD, 0) AS HIS_GOOD, NVL(HIS_NORMAL, 0) AS HIS_NORMAL, NVL(HIS_BAD, 0) AS HIS_BAD
+		FROM (SELECT *
+		         FROM MEMBER M LEFT OUTER JOIN (SELECT MEM_ID, COUNT(*) ART_COUNT FROM ARTICLE GROUP BY MEM_ID) A USING(MEM_ID)
+		                    			 LEFT OUTER JOIN (SELECT MEM_ID, COUNT(*) REP_COUNT FROM REPLY GROUP BY MEM_ID) R USING(MEM_ID)
+		                    			 LEFT OUTER JOIN (SELECT MEM_ID, SUM(HIS_GOOD) HIS_GOOD, SUM(HIS_NORMAL) HIS_NORMAL, SUM(HIS_BAD) HIS_BAD
+		                                     					FROM TRADE T NATURAL JOIN (SELECT TRD_ID, COUNT(CASE WHEN HIS_SCORE = 1 THEN 1 END) HIS_GOOD,
+		                                                                       							 		  COUNT(CASE WHEN HIS_SCORE = 0 THEN 1 END) HIS_NORMAL,
+		                                                                      							 		  COUNT(CASE WHEN HIS_SCORE = -1 THEN 1 END) HIS_BAD
+		                                                                								 FROM HISTORY GROUP BY TRD_ID)
+		                                     					GROUP BY MEM_ID) H USING(MEM_ID))
+		WHERE MEM_ID = #{mem_id}
+	</select>
+</mapper>

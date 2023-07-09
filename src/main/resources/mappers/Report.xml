@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java501.S20230401.model.ReportMapper">
+
+	<!-- 김찬영 -->
+ 	<insert id="cyReportinsert" parameterType="Report">
+		insert into report
+        	(report_id, mem_id, report_content, report_date, report_status, report_reason)
+		values
+			((select max(report_id) + 1 from report), #{mem_id}, #{report_content}, sysdate, 1, null)
+	</insert> 
+	
+	<!-- 유현규 -->
+	<select id="hgGetCountAllUnprocessedReports" resultType="int">
+		SELECT NVL(COUNT(*), 0) FROM REPORT WHERE REPORT_STATUS = 0
+	</select>
+	<select id="hgGetAllUnprocessedReports" parameterType="Report" resultType="Report">
+		SELECT *
+		FROM (SELECT ROWNUM RN, R.*, M.MEM_NICKNAME, M.MEM_USERNAME, T.TYPE
+			  FROM (SELECT *
+			  		FROM REPORT
+			  		WHERE REPORT_STATUS = 0
+			  		ORDER BY REPORT_DATE DESC)
+			  	   R LEFT OUTER JOIN MEMBER M ON (R.MEM_ID = M.MEM_ID)
+									 JOIN (SELECT REPORT_ID, 'ARTICLE' TYPE FROM ARTICLE WHERE REPORT_ID IS NOT NULL
+				  		 				    UNION
+				  		 				    SELECT REPORT_ID, 'MEMBER' TYPE FROM MEMBER WHERE REPORT_ID IS NOT NULL
+				  						    UNION
+				  						    SELECT REPORT_ID, 'REPLY' TYPE FROM REPLY WHERE REPORT_ID IS NOT NULL)
+				  						   T ON (R.REPORT_ID = T.REPORT_ID))
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	<select id="hgGetMemberByReportId" parameterType="int" resultType="Member">
+		SELECT *
+		FROM (SELECT TM.MEM_ID, TM.MEM_USERNAME, TM.MEM_NICKNAME, TM.MEM_EMAIL, TM.MEM_TEL, TM.MEM_REGION1,
+						   TM.MEM_REGION2, TM.MEM_AUTHORITY, TM.MEM_REGDATE, TM.MEM_IMAGE, TM.MEM_GENDER,
+						   TM.MEM_NAME, TM.MEM_BIRTHDAY, TM.MEM_LATEST, TM.ISDELETE, TM.REPORT_ID
+				 FROM MEMBER TM WHERE REPORT_ID = #{report_id}) A,
+				(SELECT COUNT(CASE WHEN (R.REPORT_STATUS = 1 AND REPORT_ID = #{report_id}) THEN 1 END) MEMBER_REPORT_CNT,
+						  COUNT(CASE WHEN (A.MEM_ID = (SELECT MEM_ID FROM MEMBER WHERE REPORT_ID = #{report_id}) AND R.REPORT_STATUS = 1) THEN 1 END) ARTICLE_REPORT_CNT,
+						  COUNT(CASE WHEN (REP.MEM_ID = (SELECT MEM_ID FROM MEMBER WHERE REPORT_ID = #{report_id}) AND R.REPORT_STATUS = 1) THEN 1 END) REPLY_REPORT_CNT
+				 FROM REPORT R LEFT OUTER JOIN ARTICLE A USING (REPORT_ID) LEFT OUTER JOIN REPLY REP USING (REPORT_ID))
+	</select>
+	<select id="hgGetArticleByReportId" parameterType="int" resultType="Article">
+		SELECT A.*, M.MEM_NICKNAME, M.MEM_USERNAME
+		FROM ARTICLE A LEFT OUTER JOIN MEMBER M ON (A.MEM_ID = M.MEM_ID)
+		WHERE A.REPORT_ID = #{report_id}
+	</select>
+	<select id="hgGetReplyByReportId" parameterType="int" resultType="Reply">
+		SELECT R.*, M.MEM_NICKNAME, M.MEM_USERNAME, M.MEM_IMAGE
+		FROM REPLY R LEFT OUTER JOIN MEMBER M ON (R.MEM_ID = M.MEM_ID)
+		WHERE R.REPORT_ID = #{report_id}
+	</select>
+	<update id="hgUpdateMemberAboutReport" parameterType="Report">
+		UPDATE MEMBER SET MEM_AUTHORITY = 102 WHERE REPORT_ID = #{report_id}
+	</update>
+	<update id="hgUpdateArticleAboutReport" parameterType="Report">
+		UPDATE ARTICLE SET ISDELETE = 1 WHERE REPORT_ID = #{report_id}
+	</update>
+	<update id="hgUpdateReplyAboutReport" parameterType="Report">
+		UPDATE REPLY SET ISDELETE = 1 WHERE REPORT_ID = #{report_id}
+	</update>
+	<update id="hgUpdateReportBatch" parameterType="Report">
+		UPDATE REPORT SET REPORT_STATUS = 1 WHERE REPORT_ID = #{report_id}
+	</update>
+	<delete id="hgRejectReport" parameterType="Report">
+		DELETE FROM REPORT WHERE REPORT_ID = #{report_id} AND MEM_ID = #{mem_id}
+	</delete>
+	
+	
+	<!-- 양동균 -->
+	<insert id="dgShareReport" parameterType="Report">
+		INSERT	INTO
+		REPORT	(REPORT_ID, MEM_ID, REPORT_CONTENT, REPORT_DATE, REPORT_STATUS)
+		VALUES  (
+				<choose>
+					<when test="report_id != null">
+						#{report_id},
+					</when>
+					<otherwise>
+						(SELECT MAX(REPORT_ID)+1 FROM REPORT),
+					</otherwise>
+				</choose>
+				#{mem_id},
+				#{report_content},
+				SYSDATE,
+				0)
+		<selectKey keyProperty="report_id" resultType="int" order="AFTER">
+			SELECT 	MAX(REPORT_ID)
+			FROM 	REPORT
+			WHERE	mem_id = #{mem_id}
+		</selectKey>
+	</insert>
+	<select id="dgshareIsReport" parameterType="Report" resultType="Boolean">
+		SELECT	COUNT(REPORT_ID)
+		FROM 	REPORT
+		WHERE 	REPORT_ID = #{report_id, jdbcType=INTEGER}
+		AND		MEM_ID = #{mem_id, jdbcType=INTEGER}
+	</select>
+	
+</mapper>

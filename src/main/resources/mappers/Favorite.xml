@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java501.S20230401.model.FavoriteMapper">
+	
+	<!-- 김찬영 -->
+	<!-- 관심 목록 -->
+	<insert id="cyFavorite" parameterType="Favorite">
+	  insert into favorite(art_id, brd_id, mem_id)
+	  values (#{art_id, jdbcType=NUMERIC}, #{brd_id, jdbcType=NUMERIC}, #{mem_id, jdbcType=NUMERIC})
+	</insert>	
+	
+	<!-- 양동균 -->
+	<!-- 관심목록 여부 조회 -->
+	<select id="dgUserFavorite" parameterType="Article" resultType="Integer">
+		SELECT	COUNT(*)
+		FROM 	FAVORITE
+		WHERE	ART_ID = #{art_id}
+		AND		BRD_ID = #{brd_id}
+		AND 	MEM_ID = #{mem_id}
+	</select>
+	<!-- 관심목록 추가 -->
+	<insert id="dgShareFavoriteAdd" parameterType="Article">
+		INSERT  INTO
+		FAVORITE(ART_ID, BRD_ID, MEM_ID)
+		VALUES  (#{art_id}, #{brd_id}, #{mem_id})
+	</insert>
+	<!-- 삭제 -->
+	<delete id="dgShareFavoriteDel" parameterType="Article">
+		DELETE
+		FROM    FAVORITE
+		WHERE	ART_ID = #{art_id}
+		AND		BRD_ID = #{brd_id}
+		AND 	MEM_ID = #{mem_id}
+	</delete>
+</mapper>

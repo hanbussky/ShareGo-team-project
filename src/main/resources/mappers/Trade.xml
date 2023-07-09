@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java501.S20230401.model.TradeMapper">
+
+
+	<!-- 양동균 -->
+	<resultMap type="Trade" id="dgTradeMap">
+		<id 	column="trd_id" 		property="trd_id"/><!-- PK -->
+		<result column="mem_id" 		property="mem_id"/><!-- FK -->
+		<result column="trd_status" 	property="trd_status"/><!-- FK -->
+		<result column="reg_id" 		property="reg_id"/><!-- FK -->
+		<result column="trd_gender" 	property="trd_gender"/><!-- FK -->
+		<result column="trd_max" 		property="trd_max"/>
+		<result column="trd_enddate" 	property="trd_enddate"/>
+		<result column="trd_cost" 		property="trd_cost"/>
+		<result column="trd_loc" 		property="trd_loc"/>
+		<result column="trd_minage" 	property="trd_minage"/>
+		<result column="trd_maxage" 	property="trd_maxage"/>
+		<collection property="member" 	resultMap="com.java501.S20230401.model.MemberMapper.dgMemberMap"/>
+		<collection property="comm" 	resultMap="com.java501.S20230401.model.CommMapper.dgCommMap"/>
+		<collection property="region" 	resultMap="com.java501.S20230401.model.RegionMapper.dgRegionMap"/>
+	</resultMap>
+	<!-- 거래 수정 -->
+	<update id="dgUpdateTrade" parameterType="Trade">
+		UPDATE	TRADE
+		SET		TRD_MAX 	= #{trd_max, 	jdbcType=INTEGER},
+				TRD_STATUS  = #{trd_status, jdbcType=INTEGER},
+				TRD_ENDDATE = #{trd_enddate,jdbcType=DATE},
+				TRD_COST	= #{trd_cost,	jdbcType=INTEGER},
+				REG_ID		= #{reg_id,		jdbcType=INTEGER},
+				TRD_LOC		= #{trd_loc,	jdbcType=VARCHAR},
+				TRD_GENDER	= #{trd_gender,	jdbcType=INTEGER},
+				TRD_MINAGE	= #{trd_minage,	jdbcType=INTEGER},
+				TRD_MAXAGE 	= #{trd_maxage,	jdbcType=INTEGER}
+		WHERE	TRD_ID = #{trd_id}
+	</update>
+	<select id="dgGetTrade" parameterType="Article" resultType="Trade">
+		SELECT	*
+		FROM 	TRADE
+		WHERE	TRD_ID = (SELECT	TRD_ID
+							FROM 	ARTICLE
+							WHERE	ART_ID = #{art_id} 
+							AND		BRD_ID = #{brd_id})
+	</select>
+	<!-- 거래 상태 확인 -->
+	<select id="dgShareTradeMax" parameterType="Trade" resultType="Integer">
+		SELECT  COUNT(*)
+		FROM    TRADE T JOIN JOIN J
+		ON      T.TRD_ID = J.TRD_ID
+		WHERE   T.TRD_ID = #{trd_id}
+		GROUP BY T.TRD_MAX
+		HAVING  T.TRD_MAX = COUNT(T.TRD_ID)
+	</select>
+	<update id="dgShareTradeStatus" parameterType="Trade">
+		UPDATE 	TRADE
+		SET 	TRD_STATUS = #{trd_status}
+		WHERE	TRD_ID = #{trd_id}
+	</update>
+	
+	<!-- 유현규 -->
+	<select id="hgGetRecentOFFEREDTrade" parameterType="Trade" resultType="TradeInfo">
+		SELECT *
+		FROM (SELECT T.*, M.MEM_NICKNAME, A.ART_ID, A.BRD_ID, A.ART_TITLE, A.ART_REGDATE, A.ART_CONTENT,
+					 A.ART_TAG1, A.ART_TAG2, A.ART_TAG3, A.ART_TAG4, A.ART_TAG5,
+			  	     C1.COMM_VALUE TRD_STATUSNAME, C2.COMM_VALUE TRD_GENDERNAME,
+			  	     R.REG_NAME, J1.JOIN_COUNT
+			  FROM TRADE T LEFT OUTER JOIN ARTICLE A ON (T.TRD_ID = A.TRD_ID)
+			  			   LEFT OUTER JOIN MEMBER M ON (T.MEM_ID = M.MEM_ID)
+			  			   LEFT OUTER JOIN COMM C1 ON (T.TRD_STATUS = C1.COMM_ID)
+			  			   LEFT OUTER JOIN COMM C2 ON (T.TRD_GENDER = C2.COMM_ID)
+			  			   LEFT OUTER JOIN REGION R ON (T.REG_ID = R.REG_ID)
+			  			   LEFT OUTER JOIN (SELECT TRD_ID, COUNT(*) JOIN_COUNT
+			  			   					FROM JOIN
+			  			   					GROUP BY TRD_ID) J1 ON (T.TRD_ID = J1.TRD_ID)
+			  WHERE T.MEM_ID = #{mem_id}
+			  	  <if test="trd_status != null">
+			  	  	AND T.TRD_STATUS = #{trd_status}
+			  	  </if>
+			  ORDER BY A.ART_REGDATE DESC)
+		<![CDATA[
+			WHERE ROWNUM <= 10
+		]]>
+	</select>
+	<select id="hgGetRecentWAITINGTrade" parameterType="Trade" resultType="TradeInfo">
+		SELECT *
+		FROM (SELECT T.*, M.MEM_NICKNAME, A.ART_ID, A.BRD_ID, A.ART_TITLE, A.ART_REGDATE, A.ART_CONTENT,
+					 A.ART_TAG1, A.ART_TAG2, A.ART_TAG3, A.ART_TAG4, A.ART_TAG5,
+			  	     C1.COMM_VALUE TRD_STATUSNAME, C2.COMM_VALUE TRD_GENDERNAME,
+			  	     R.REG_NAME, W.WAIT_DATE, J1.JOIN_COUNT
+			  FROM TRADE T LEFT OUTER JOIN ARTICLE A ON (T.TRD_ID = A.TRD_ID)
+			  			   LEFT OUTER JOIN MEMBER M ON (T.MEM_ID = M.MEM_ID)
+			  			   LEFT OUTER JOIN COMM C1 ON (T.TRD_STATUS = C1.COMM_ID)
+			  			   LEFT OUTER JOIN COMM C2 ON (T.TRD_GENDER = C2.COMM_ID)
+			  			   LEFT OUTER JOIN REGION R ON (T.REG_ID = R.REG_ID)
+			  			   LEFT OUTER JOIN WAITING W ON (T.TRD_ID = W.TRD_ID)
+			  			   LEFT OUTER JOIN (SELECT TRD_ID, COUNT(*) JOIN_COUNT
+			  			   					FROM JOIN
+			  			   					GROUP BY TRD_ID) J1 ON (T.TRD_ID = J1.TRD_ID)
+			  WHERE W.MEM_ID = #{mem_id}
+			  	  <if test="trd_status != null">
+			  	  	AND T.TRD_STATUS = #{trd_status}
+			  	  </if>
+			  ORDER BY A.ART_REGDATE DESC)
+		<![CDATA[
+			WHERE ROWNUM <= 10
+		]]>
+	</select>
+	<select id="hgGetRecentJOINEDTrade" parameterType="Trade" resultType="TradeInfo">
+		SELECT *
+		FROM (SELECT T.*, M.MEM_NICKNAME, A.ART_ID, A.BRD_ID, A.ART_TITLE, A.ART_REGDATE, A.ART_CONTENT,
+					 A.ART_TAG1, A.ART_TAG2, A.ART_TAG3, A.ART_TAG4, A.ART_TAG5,
+			  	     C1.COMM_VALUE TRD_STATUSNAME, C2.COMM_VALUE TRD_GENDERNAME,
+			  	     R.REG_NAME, J.JOIN_DATE, J1.JOIN_COUNT
+			  FROM TRADE T LEFT OUTER JOIN ARTICLE A ON (T.TRD_ID = A.TRD_ID)
+			  			   LEFT OUTER JOIN MEMBER M ON (T.MEM_ID = M.MEM_ID)
+			  			   LEFT OUTER JOIN COMM C1 ON (T.TRD_STATUS = C1.COMM_ID)
+			  			   LEFT OUTER JOIN COMM C2 ON (T.TRD_GENDER = C2.COMM_ID)
+			  			   LEFT OUTER JOIN REGION R ON (T.REG_ID = R.REG_ID)
+			  			   LEFT OUTER JOIN JOIN J ON (T.TRD_ID = J.TRD_ID)
+			  			   LEFT OUTER JOIN (SELECT TRD_ID, COUNT(*) JOIN_COUNT
+			  			   					FROM JOIN
+			  			   					GROUP BY TRD_ID) J1 ON (T.TRD_ID = J1.TRD_ID)
+			  WHERE J.MEM_ID = #{mem_id}
+			  	  <if test="trd_status != null">
+			  	  	AND T.TRD_STATUS = #{trd_status}
+			  	  </if>
+			  ORDER BY A.ART_REGDATE DESC)
+		<![CDATA[
+			WHERE ROWNUM <= 10
+		]]>
+	</select>
+	
+</mapper>
